@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <title>chat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="zcl">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <style type="text/css">
+        body {
+            padding-top: 40px;
+            padding-bottom: 40px;
+            background-color: #f5f5f5;
+        }
+
+        .form-signin {
+            max-width: 300px;
+            padding: 19px 29px 29px;
+            margin: 0 auto 20px;
+            background-color: #fff;
+            border: 1px solid #e5e5e5;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+            -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+            -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+        }
+
+        .form-signin .form-signin-heading,
+        .form-signin .checkbox {
+            margin-bottom: 10px;
+        }
+
+        .form-signin input[type="text"],
+        .form-signin input[type="password"] {
+            font-size: 16px;
+            height: auto;
+            margin-bottom: 15px;
+            padding: 7px 9px;
+        }
+
+        #editor {
+            overflow-x: hidden;
+            overflow-y: scroll;
+            max-height: 100px;
+            height: 100px;
+            background-color: #ffffff;
+        }
+
+        .bg-color {
+            background-color: #ffffff;
+
+        }
+    </style>
+    <link rel="stylesheet" href="css/bootstrap-responsive.css">
+    <script src="js/lib/jquery-1.8.0.min.js"></script>
+    <script src="js/lib/bootstrap.min.js"></script>
+    <script src="js/lib/iscroll.js"></script>
+    <script src="js/lib/jquery.hotkeys.js"></script>
+    <script src="js/lib/wysiwyg.js"></script>
+    <script src="js/lib/socket.io.js"></script>
+    <script src="js/lib/pomeloclient.js"></script>
+    <script src="js/chat.js"></script>
+</head>
+<body>
+<div class="container">
+
+    <div class="form-signin" id="login">
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <input type="text" class="input-block-level" placeholder="Email address" name="username" id="username">
+        <input type="password" class="input-block-level" placeholder="Password" name="pwd" id="pwd">
+        <a class="btn btn-large btn-primary" id="btn">登录</a>
+    </div>
+
+    <div id="chat" style="display: none">
+        <div class="row">
+            <div class="span12">
+                <div class="row">
+                    <div class="span9">
+                        <div class="chatHistory bg-color" style="height: 500px;border: 1px solid #e5e5e5;"></div>
+                    </div>
+                    <div class="span3">
+                        <div class="bg-color" style="height: 500px;" id="wrapper">
+                            <div id="scroller">
+                                <ul class="nav nav-tabs nav-stacked"  id=usersList></ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="span9">
+                        <div class="row">
+                            <div class="span9">
+                                <div class="btn-toolbar" data-role="editor-toolbar" data-target="#editor">
+                                    <div class="btn-group">
+                                        <a class="btn dropdown-toggle" data-toggle="dropdown" title="" data-original-title="Font"><i class="icon-font"></i><b class="caret"></b></a>
+                                        <ul class="dropdown-menu">
+                                            <li><a data-edit="fontName Serif" style="font-family:'Serif'">Serif</a></li><li><a data-edit="fontName Sans" style="font-family:'Sans'">Sans</a></li><li><a data-edit="fontName Arial" style="font-family:'Arial'">Arial</a></li><li><a data-edit="fontName Arial Black" style="font-family:'Arial Black'">Arial Black</a></li><li><a data-edit="fontName Courier" style="font-family:'Courier'">Courier</a></li><li><a data-edit="fontName Courier New" style="font-family:'Courier New'">Courier New</a></li><li><a data-edit="fontName Comic Sans MS" style="font-family:'Comic Sans MS'">Comic Sans MS</a></li><li><a data-edit="fontName Helvetica" style="font-family:'Helvetica'">Helvetica</a></li><li><a data-edit="fontName Impact" style="font-family:'Impact'">Impact</a></li><li><a data-edit="fontName Lucida Grande" style="font-family:'Lucida Grande'">Lucida Grande</a></li><li><a data-edit="fontName Lucida Sans" style="font-family:'Lucida Sans'">Lucida Sans</a></li><li><a data-edit="fontName Tahoma" style="font-family:'Tahoma'">Tahoma</a></li><li><a data-edit="fontName Times" style="font-family:'Times'">Times</a></li><li><a data-edit="fontName Times New Roman" style="font-family:'Times New Roman'">Times New Roman</a></li><li><a data-edit="fontName Verdana" style="font-family:'Verdana'">Verdana</a></li></ul>
+                                    </div>
+                                    <div class="btn-group">
+                                        <a class="btn dropdown-toggle" data-toggle="dropdown" title="" data-original-title="Font Size"><i class="icon-text-height"></i>&nbsp;<b class="caret"></b></a>
+                                        <ul class="dropdown-menu">
+                                            <li><a data-edit="fontSize 5"><font size="5">Huge</font></a></li>
+                                            <li><a data-edit="fontSize 3"><font size="3">Normal</font></a></li>
+                                            <li><a data-edit="fontSize 1"><font size="1">Small</font></a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="btn-group">
+                                        <a class="btn" data-edit="bold" title="" data-original-title="Bold (Ctrl/Cmd+B)"><i class="icon-bold"></i></a>
+                                        <a class="btn" data-edit="italic" title="" data-original-title="Italic (Ctrl/Cmd+I)"><i class="icon-italic"></i></a>
+                                    </div>
+                                    <div class="btn-group">
+                                        <a class="btn" data-edit="justifyleft" title="" data-original-title="Align Left (Ctrl/Cmd+L)"><i class="icon-align-left"></i></a>
+                                        <a class="btn" data-edit="justifycenter" title="" data-original-title="Center (Ctrl/Cmd+E)"><i class="icon-align-center"></i></a>
+                                        <a class="btn" data-edit="justifyright" title="" data-original-title="Align Right (Ctrl/Cmd+R)"><i class="icon-align-right"></i></a>
+                                        <a class="btn" data-edit="justifyfull" title="" data-original-title="Justify (Ctrl/Cmd+J)"><i class="icon-align-justify"></i></a>
+                                    </div>
+                                    <div class="btn-group">
+                                        <a class="btn dropdown-toggle" data-toggle="dropdown" title="" data-original-title="Hyperlink"><i class="icon-link"></i></a>
+                                        <div class="dropdown-menu input-append">
+                                            <input class="span2" placeholder="URL" type="text" data-edit="createLink">
+                                            <button class="btn" type="button">Add</button>
+                                        </div>
+                                        <a class="btn" data-edit="unlink" title="" data-original-title="Remove Hyperlink"><i class="icon-cut"></i></a>
+
+                                    </div>
+
+
+                                    <div class="btn-group">
+                                        <a class="btn" data-edit="undo" title="" data-original-title="Undo (Ctrl/Cmd+Z)"><i class="icon-undo"></i></a>
+                                        <a class="btn" data-edit="redo" title="" data-original-title="Redo (Ctrl/Cmd+Y)"><i class="icon-repeat"></i></a>
+                                    </div>
+
+                                </div>
+                                <div id="editor"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="span9">
+                                <div class="row">
+                                    <div class="span7"></div>
+                                    <div class="span2">
+                                        <p>
+                                            <a class="btn  btn-primary" id="send">发送</a>
+                                            <a class="btn">清空</a>
+                                        </p>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="span3">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('#editor').wysiwyg();
+    var myScroll = new iScroll('wrapper', { hScrollbar: false, vScrollbar: false });
+</script>
+
+
+
+</body>
+</html>
